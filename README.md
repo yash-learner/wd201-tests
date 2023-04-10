@@ -1,16 +1,16 @@
-# Tests for WD201 assignments
+# Automated tests for WD201
 
-This repository contains test files that help confirm that student submissions on WD201 work as expected.
+This repo contains tests used to verify student submissions in [WD201](https://www.pupilfirst.school/courses/1804/)
 
-## Possible issues
+# Links to VTA config
 
-### `require': cannot load such file -- rexml/document
-
-Rails on Ruby 3 will require a gem `rexml` to be added to the `Gemfile`. Add the following line to the `:test` group:
-
-```ruby
-group :test do
-  # ...
-  gem 'rexml', '~> 3.2', '>= 3.2.5'
-end
-```
+Level 1
+Level 2
+Level 3
+Level 4
+Level 5
+Level 6
+Level 7
+Level 8
+Level 9
+Level 10

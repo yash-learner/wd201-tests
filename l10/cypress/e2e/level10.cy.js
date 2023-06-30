@@ -56,7 +56,7 @@ describe("Preparing for Level 10 milestone testing, first we will verify signup"
 
     cy.wait(500);
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq('/signup')
+      expect(loc.pathname).to.eq("/signup");
     });
 
     // Empty email
@@ -71,7 +71,7 @@ describe("Preparing for Level 10 milestone testing, first we will verify signup"
 
     cy.wait(500);
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq('/signup')
+      expect(loc.pathname).to.eq("/signup");
     });
 
     // Empty password
@@ -86,7 +86,7 @@ describe("Preparing for Level 10 milestone testing, first we will verify signup"
 
     cy.wait(500);
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq('/signup')
+      expect(loc.pathname).to.eq("/signup");
     });
   });
 
@@ -105,7 +105,18 @@ describe("Preparing for Level 10 milestone testing, first we will verify signup"
     cy.get('button[type="submit"]').click();
     cy.wait(500);
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq('/todos')
+      expect(loc.pathname).to.eq("/todos");
+    });
+  });
+  it("should not login with invalid credentials", () => {
+    cy.visit(studentSubmissionUrl + "/login");
+    clearLoginFields(cy);
+    cy.get('input[name="email"]').type(email);
+    cy.get('input[name="password"]').type("inv@lid");
+    cy.get('button[type="submit"]').click();
+    cy.wait(500);
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/login");
     });
   });
 });

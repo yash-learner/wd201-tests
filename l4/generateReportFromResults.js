@@ -1,20 +1,42 @@
 let fs = require("fs");
 
 let generateFeedback = (passed, results) => {
-  const assertionResults = results["assertionResults"]
-    .map((item) => {
-      let status = item["status"];
-      let title = item["title"];
-      let statusSymbol = status == "passed" ? "✓" : "✗";
-      return `${statusSymbol} ${title}`;
-    })
-    .join("\n\n");
+  const feedback = results.map((result) => {
+    const checkForFailure = result["name"].includes("Failure");
+    const passStatus = checkForFailure ? "failed" : "passed";
+    let errorMessages = [];
+    const assertionResults = result["assertionResults"]
+      .map((item) => {
+        let status = item["status"];
+        let title = item["title"];
+        let statusSymbol = status === "passed" ? "✓" : "✗";
+        if (status !== passStatus) {
+          errorMessages = errorMessages.concat(item["failureMessages"]);
+        }
+        return `${statusSymbol} ${title}`;
+      })
+      .join("\n\n");
+    let errorMessage = errorMessages.join("\n\n");
 
-  let errorMessage = results["message"];
+    if (checkForFailure) {
+      return (
+        "Checking with wrong implementation, the tests should fail" +
+        "\n\n" +
+        assertionResults +
+        "\n\n" +
+        errorMessage
+      );
+    }
+    return (
+      "Checking with actual implementation, the tests should pass" +
+      "\n\n" +
+      assertionResults +
+      "\n\n" +
+      errorMessage
+    );
+  });
 
-  const feedback = assertionResults + "\n\n" + errorMessage;
-
-  return feedback;
+  return feedback.join("\n\n");
 };
 
 const writeReport = (data) => {
@@ -35,8 +57,18 @@ const readFile = async (filePath) => {
 readFile("results.json").then((data) => {
   if (data) {
     let results = JSON.parse(data);
-    const passed = results["testResults"][0]["status"] == "passed";
-    let feedback = generateFeedback(passed, results["testResults"][0]);
+    const passed = results["testResults"].reduce((acc, result) => {
+      const checkForFailure = result["name"].includes("Failure");
+      if (checkForFailure) {
+        const suiteResult = result["assertionResults"]
+          .map((aResult) => aResult.status === "passed")
+          .includes(true);
+        return acc && !suiteResult;
+      }
+      return acc && result["status"] === "passed";
+    }, true);
+
+    let feedback = generateFeedback(passed, results["testResults"]);
     writeReport({
       version: 0,
       grade: passed ? "accept" : "reject",

@@ -57,6 +57,18 @@ const readFile = async (filePath) => {
 readFile("results.json").then((data) => {
   if (data) {
     let results = JSON.parse(data);
+    const testCaseCount = results["numTotalTests"] / 2; // Remove the failure test case we duplicated
+    if (testCaseCount < 5) {
+      const feedback =
+        "You need to implement minimum 5 test cases. ie, \n 1. Test to add a todo \n 2. Test to mark a todo as complete. \n 3. Test to retrieve overdue items \n 4. Test to retrieve due today items \n 5. Test to retrieve due later items.";
+      return writeReport({
+        version: 0,
+        grade: "reject",
+        status: "failure",
+        feedback: feedback,
+        report: feedback,
+      });
+    }
     const passed = results["testResults"].reduce((acc, result) => {
       const checkForFailure = result["name"].includes("Failure");
       if (checkForFailure) {

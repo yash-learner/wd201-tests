@@ -9,5 +9,6 @@ module.exports = defineConfig({
         filename: "results.json",
       });
     },
+    pageLoadTimeout: 5000
   },
 });

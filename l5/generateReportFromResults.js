@@ -46,7 +46,7 @@ readFile("results.json").then((data) => {
     const assertionResults =
       results["testResults"][0]["assertionResults"].length > 0
         ? results["testResults"][0]["assertionResults"]
-        : [{ status: "fail", title: JSON.stringify(results["testResults"][0]["message"]) }];
+        : [{ status: "fail", title: results["testResults"][0]["message"] }];
     let feedback = generateFeedback(passed, assertionResults);
     writeReport({
       version: 0,

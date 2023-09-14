@@ -41,11 +41,13 @@ const readFile = async (filePath) => {
 readFile("results.json").then((data) => {
   if (data) {
     let results = JSON.parse(data);
-    const passed = results["numFailedTests"] == 0;
-    let feedback = generateFeedback(
-      passed,
-      results["testResults"][0]["assertionResults"]
-    );
+    const passed =
+      results["numFailedTests"] == 0 && results["numFailedTestSuites"] == 0;
+    const assertionResults =
+      results["testResults"][0]["assertionResults"].length > 0
+        ? results["testResults"][0]["assertionResults"]
+        : [{ status: "fail", title: results["testResults"][0]["message"] }];
+    let feedback = generateFeedback(passed, assertionResults);
     writeReport({
       version: 0,
       grade: passed ? "accept" : "reject",

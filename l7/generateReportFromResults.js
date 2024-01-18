@@ -34,6 +34,7 @@ const readFile = async (filePath) => {
     return data;
   } catch (err) {
     console.log("File not found | Grading Skipped");
+    return null;
   }
 };
 
